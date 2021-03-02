@@ -28,28 +28,24 @@ basedir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lu
 mapdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lukesIsUpdating/hyperalignment/transformation_matrices/'
 resultsdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lukesIsUpdating/hyperalignment/isc_results/'
 
-# load nifti as a pymvpa dataset and then use that as ref_ds in the queryengine definition
-# mask with mymask
-#ref_ds = fmri_dataset(os.path.join(helperfiles,'olp4cbp_qe_template.nii'), mask=os.path.join(helperfiles,'brainmask.nii'))
-ref_ds = fmri_dataset(os.path.join(helperfiles,'brainmask.nii'), mask=os.path.join(helperfiles,'brainmask.nii'))
-
-len(ref_ds.fa.voxel_indices)
-
-
-# set searchlight sphere radius
-sl_radius = 3.0
-
-#create query engine
-qe = IndexQueryEngine(voxel_indices=Sphere(sl_radius))
-qe.train(ref_ds)
-
-# number of subjects connectomes to pull in
-# specify number of targets in connectome
 nsubs = int(sys.argv[1])
-print(nsubs)
+radius = int(sys.argv[2])
 cnx_tx = 489
 
-nfiles = glob.glob(os.path.join(chamats, 'ses1_only', '*'))
+load_file = os.path.join(mapdir, 'olp4cbp_mappers' + '_' + 'subs-' + str(nsubs) + '_'+ 'radius-' +  str(radius) + '.hdf5.gz')
+
+# specify number of targets in connectome
+print('Num Subs: ')
+print(nsubs)
+print('HA Radius: ')
+
+if nsubs == 337:
+	nfiles = glob.glob(os.path.join(chamats, 'ses_all', '*'))
+elif nsubs == 202:
+	nfiles = glob.glob(os.path.join(chamats, 'ses1_only', '*'))
+else:
+	nfiles = glob.glob(os.path.join(chamats, '*'))
+
 mysubs = nfiles[0:nsubs]
 
 # import connectomes into pymvpa dataset, zscore, then add chunks and voxel indices, append to list of datsets
@@ -70,7 +66,7 @@ print(dss[0].shape)
 print(len(dss))
 print(dss[0].shape)
 print('loading hyperaligned mappers')
-mappers = h5load(os.path.join(mapdir,'olp4cbp_mappers_'+ str(nsubs) + '_subs.hdf5.gz'))
+mappers = h5load(load_file)
 print('loaded mappers. creating dss_aligned list')
 dss_aligned = [mapper.forward(ds) for ds, mapper in zip(dss, mappers)]
 print(len(mappers))
@@ -102,10 +98,10 @@ sim_aligned = compute_average_similarity(dss_aligned)
 print('done sim_aligned')
 
 # save sim test and aligned
-toutdir = os.path.join(resultsdir, 'anatomical_isc' + '_' + str(len(mysubs)) + '_'+'subs'+ '.hdf5.gz')
+toutdir = os.path.join(resultsdir, 'anatomical_isc' + '_' + 'subs-'+  str(nsubs) + '_'+'radius-' + str(radius) +  '.hdf5.gz')
 h5save(toutdir, sim_test)
 
-toutdir = os.path.join(resultsdir, 'cha_isc' +'_' + str(len(mysubs)) + '_'+'subs'+ '.hdf5.gz')
+toutdir = os.path.join(resultsdir, 'cha_isc' + '_' + 'subs-' + str(nsubs) + '_' + 'radius' + str(radius) + '.hdf5.gz')
 h5save(toutdir, sim_aligned)
 
 

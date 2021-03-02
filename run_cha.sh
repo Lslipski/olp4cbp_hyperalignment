@@ -2,8 +2,8 @@
 #PBS  -m bea
 #PBS -M luke.slipski.gr@dartmouth.edu
 #PBS -N olp4cbp_hyperalign
-#PBS -l nodes=1:ppn=16
-#PBS -l walltime=250:00:00
+#PBS -l nodes=1:ppn=24
+#PBS -l walltime=300:00:00
 #PBS -o /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lukesIsUpdating/hyperalignment/log/${PBS_JOBID}.o
 #PBS -e /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lukesIsUpdating/hyperalignment/log/${PBS_JOBID}.e
 

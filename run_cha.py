@@ -21,28 +21,27 @@ from mvpa2.base.hdf5 import h5save, h5load
 
 
 helperfiles = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lukesIsUpdating/hyperalignment/helperfiles/'
-chamats = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lukesIsUpdating/hyperalignment/CHA_matrices/'
+chamats = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lukesIsUpdating/hyperalignment/CHA_matrices/ses1_only/'
 logdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lukesIsUpdating/hyperalignment/log/'
 scriptsdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lukesIsUpdating/hyperalignment/scripts/'
 basedir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lukesIsUpdating/hyperalignment/'
 
 #parameters
 nsubs = int(sys.argv[1])
-toutdir = os.path.join(basedir, 'transformation_matrices', 'olp4cbp_mappers' +'_' + str(nsubs) + '_'+'subs'+ '.hdf5.gz')
 print(nsubs)
-print(toutdir)
 
 # constants 
-N_JOBS=16
 N_BLOCKS=128
-HYPERALIGNMENT_RADIUS=5
+HYPERALIGNMENT_RADIUS=15
 cnx_tx = 489
+toutdir = os.path.join(basedir, 'transformation_matrices', 'olp4cbp_mappers' +'_' + 'subs-' + str(nsubs) + '_'+ 'radius-' +  str(HYPERALIGNMENT_RADIUS) + '.hdf5.gz')
+print(toutdir)
 
 # load nifti as a pymvpa dataset and then use that as ref_ds in the queryengine definition
 # mask with data in brainmask so only 170k (size of connectomes) voxels are included
 ref_ds = fmri_dataset(os.path.join(helperfiles,'brainmask.nii'), mask=os.path.join(helperfiles,'brainmask.nii'))
 print('Size of brain mask:')
-len(ref_ds.fa.voxel_indices)
+print(str(len(ref_ds.fa.voxel_indices)))
 
 # set searchlight sphere radius
 sl_radius = HYPERALIGNMENT_RADIUS
@@ -52,7 +51,9 @@ qe = IndexQueryEngine(voxel_indices=Sphere(sl_radius))
 qe.train(ref_ds)
 
 # load all subject 
-nfiles = glob.glob(os.path.join(chamats, 'ses1_only', '*'))
+nfiles = glob.glob(os.path.join(chamats, '*ses-*'))
+print('Loading participant data from: ')
+print(glob.glob(os.path.join(chamats,'ses_all')))
 mysubs = nfiles[0:nsubs]
 
 # import connectomes into pymvpa dataset, zscore, then add chunks and voxel indices, append to list of datsets
