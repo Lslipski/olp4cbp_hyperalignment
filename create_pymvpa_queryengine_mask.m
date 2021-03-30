@@ -14,7 +14,7 @@ atl = load_atlas('canlab2018_2mm'); % dat dimensions [352328×1 int32]
 % bm_masked = apply_mask(bm_rs, atl); % dat dimensions [170804×1 double]
 
 %% resample then mask
-mysubj_rs = resample_space(mysubj, atl);
+mysubj_rs = resample_space(mysubj.dat_denoised, atl);
 mysubj_rs_masked = apply_mask(mysubj_rs, atl);
 
 % save properly sampled brainmask.nii
