@@ -13,4 +13,4 @@ module load python/anaconda2
 
 conda activate comp_meth_env
 
-python /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/data/OLP4CBP_old_2019_lukesIsUpdating/hyperalignment/scripts/run_cha.py 202
+python /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/scripts/run_cha.py 202
