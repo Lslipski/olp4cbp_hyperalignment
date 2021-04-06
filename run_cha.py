@@ -28,11 +28,14 @@ basedir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperal
 
 #parameters
 nsubs = int(sys.argv[1])
+HYPERALIGNMENT_RADIUS = int(sys.argv[2])
+print('Number of Subjects: ')
 print(nsubs)
+print('HA Radius: ')
+print(HYPERALIGNMENT_RADIUS)
 
 # constants 
 N_BLOCKS=128
-HYPERALIGNMENT_RADIUS=15
 cnx_tx = 489
 toutdir = os.path.join(basedir, 'transformation_matrices', 'olp4cbp_mappers' +'_' + 'subs-' + str(nsubs) + '_'+ 'radius-' +  str(HYPERALIGNMENT_RADIUS) + '.hdf5.gz')
 print(toutdir)
