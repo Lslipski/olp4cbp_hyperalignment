@@ -22,7 +22,7 @@ from scipy.spatial.distance import pdist, cdist
 
 helperfiles = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/helperfiles/'
 chamats = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/CHA_matrices/'
-common_space_dir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/common_spaces/commonspace_subs-202_radius-5/'
+common_space_dir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/common_spaces/commonspace_subs-202_radius-10/'
 logdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/log/'
 scriptsdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/scripts/'
 basedir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/'
@@ -35,7 +35,7 @@ space = str(sys.argv[3])
 cnx_tx = 489
 
 load_file = os.path.join(mapdir, 'olp4cbp_mappers' + '_' + 'subs-' + str(nsubs) + '_'+ 'radius-' +  str(radius) + '.hdf5.gz')
-print('Loading From: ')
+print('Loading Mappers From: ')
 print(load_file)
 
 # specify number of targets in connectome

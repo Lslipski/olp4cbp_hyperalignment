@@ -27,7 +27,7 @@ logdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperali
 scriptsdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/scripts/'
 basedir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/'
 mapdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/transformation_matrices/'
-resultsdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/common_spaces/commonspace_subs-202_radius-5/'
+resultsdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/common_spaces/commonspace_subs-202_radius-10/'
 nsubs = 202
 cnx_tx = 489
 
@@ -36,16 +36,16 @@ nfiles = glob.glob(os.path.join(chamats, 'ses1_only', '*'))
 mysubs = nfiles[0:nsubs]
 
 # load transformation matrices
-mappers = h5load(os.path.join(mapdir,'olp4cbp_mappers_subs-202_radius-5.hdf5.gz'))
+mappers = h5load(os.path.join(mapdir,'olp4cbp_mappers_subs-202_radius-10.hdf5.gz'))
 
 
 # loop through subjects, apply transformation matrix and save
 for sub in range(len(mysubs)):
     sub_ds = mv.Dataset(np.load(mysubs[sub]))
     dss_aligned = mappers[sub].forward(sub_ds)
-    np.save(resultsdir+'commonspace_subs-202_radius-20_'+os.path.split(mysubs[sub])[1], dss_aligned)
+    np.save(resultsdir+'commonspace_subs-202_radius-10_'+os.path.split(mysubs[sub])[1], dss_aligned)
     print(sub)
-    print('commonspace_subs-202_radius-20_'+os.path.split(mysubs[sub])[1])
+    print('commonspace_subs-202_radius-10_'+os.path.split(mysubs[sub])[1])
 
 
 

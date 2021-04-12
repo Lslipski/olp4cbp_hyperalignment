@@ -56,7 +56,7 @@ qe.train(ref_ds)
 # load all subject 
 nfiles = glob.glob(os.path.join(chamats, '*ses-*'))
 print('Loading participant data from: ')
-print(glob.glob(os.path.join(chamats,'ses_all')))
+print(chamats)
 mysubs = nfiles[0:nsubs]
 
 # import connectomes into pymvpa dataset, zscore, then add chunks and voxel indices, append to list of datsets
