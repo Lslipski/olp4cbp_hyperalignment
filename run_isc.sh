@@ -12,4 +12,4 @@ module load python/anaconda2
 
 conda activate comp_meth_env
 
-python /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/scripts/run_isc.py 202 10 HA
+python /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/scripts/run_isc.py 201 10 AA

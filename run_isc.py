@@ -28,15 +28,13 @@ scriptsdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hype
 basedir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/'
 mapdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/transformation_matrices/'
 resultsdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/isc_results/'
+spondir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/CHA_matrices/sponpain/ses1_only'
+bladdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/data/cleaned_bladder'
 
 nsubs = int(sys.argv[1])
 radius = int(sys.argv[2])
 space = str(sys.argv[3])
 cnx_tx = 489
-
-load_file = os.path.join(mapdir, 'olp4cbp_mappers' + '_' + 'subs-' + str(nsubs) + '_'+ 'radius-' +  str(radius) + '.hdf5.gz')
-print('Loading Mappers From: ')
-print(load_file)
 
 # specify number of targets in connectome
 print('Space: ')
@@ -46,22 +44,40 @@ print(nsubs)
 print('HA Radius: ')
 print(radius)
 
-if space == 'AA':
-	if nsubs == 337:
-		nfiles = glob.glob(os.path.join(chamats, 'ses_all', '*'))
-	elif nsubs == 202:
-		nfiles = glob.glob(os.path.join(chamats, 'ses1_only', '*'))
-	else:
-		nfiles = glob.glob(os.path.join(chamats, '*'))
-elif space == 'HA':
-	nfiles = glob.glob(os.path.join(common_space_dir, '*'))
-else:
-	 print('Error: Must specify space as either AA or HA')
+# this is the order that files are loaded into hyperalignment
+sponfiles = [os.path.basename(x) for x in glob(os.path.join(spondir, '*ses-*'))]
+sponsubs = [z[0:13] for z in sponfiles]
 
+# these are the bladder pain files
+bladfiles = [os.path.basename(x) for x in glob(os.path.join(bladdir, 'sub*ses-1*.nii'))]
+bladsubs = [z[0:13] for z in bladfiles]
+
+# get a list of indices from the sponpain list (which corresponds to the order of CHA mappers) that does not include
+# participants who aren't in both lists. mapper_indices will be used to load mappers, and p_list will be used to load 
+# bladder data
+mapper_indices = []
+p_list = []
+for sub in sponsubs:
+    if sub in bladsubs and sub in sponsubs:
+        mapper_indices.append(sponsubs.index(sub))
+        p_list.append(sub)
+    else:
+        print('Not in both lists: ')
+        print(sub)
+nfiles = []
+if space == 'AA':
+    for sub in p_list:
+        nfiles.append(os.path.join(chamats, 'bladderpain', 'ses1_only', sub + '_bladderpain_cleaned_AA_matrix.npy'))
+elif space == 'HA':
+    for sub in p_list:
+        nfiles.append(os.path.join(chamats, 'bladderpain', 'ses1_only', sub + '_bladderpain_cleaned_CHA_matrix.npy'))
+else:
+     print('Error: Must specify space as either AA or HA')
+        
 mysubs = nfiles[0:nsubs]
 
 # import connectomes into pymvpa dataset, zscore, then add chunks and voxel indices, append to list of datsets
-print('importing anatomical subs')
+print('Importing data into pymvpa.')
 dss = []
 for sub in range(len(mysubs)):
     ds = mv.Dataset(np.load(mysubs[sub]))
@@ -69,20 +85,12 @@ for sub in range(len(mysubs)):
     #ds.sa['chunks'] = np.repeat(i,cnx_tx)
     mv.zscore(ds, chunks_attr=None)
     dss.append(ds)
-print('anatomical subs loaded')
+print('All subject data loaded.')
 
 print('dss sizes')
 print(len(dss))
 print(dss[0].shape)
 
-# print(len(dss))
-# print(dss[0].shape)
-# print('loading hyperaligned mappers')
-# mappers = h5load(load_file)
-# print('loaded mappers. creating dss_aligned list')
-# dss_aligned = [mapper.forward(ds) for ds, mapper in zip(dss, mappers)]
-# print(len(mappers))
-# print(dss_aligned[0].shape)
 
 print('loading ISC function')
 def compute_average_similarity(dss, metric='correlation'):
@@ -110,13 +118,14 @@ print('done sim_test')
 
 # save sim test and aligned
 if space == 'AA':
-	toutdir = os.path.join(resultsdir, 'anatomical_isc' + '_' + 'subs-'+  str(nsubs) + '_'+'radius-' + str(radius) +  '.hdf5.gz')
+	toutdir = os.path.join(resultsdir, 'bladderpain', 'anatomical_isc' + '_' + 'subs-'+  str(nsubs) + '_'+'radius-' + str(radius) +  '.hdf5.gz')
 	h5save(toutdir, sim_test)
 elif space =='HA':
-	toutdir = os.path.join(resultsdir, 'cha_isc' + '_' + 'subs-' + str(nsubs) + '_' + 'radius-' + str(radius) + '.hdf5.gz')
+	toutdir = os.path.join(resultsdir, 'bladderpain', 'cha_isc' + '_' + 'subs-' + str(nsubs) + '_' + 'radius-' + str(radius) + '.hdf5.gz')
 	h5save(toutdir, sim_test)
 else:
 	print('Error upon saving: Must Specify space as either AA or HA')
+
 
 
 
