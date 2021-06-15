@@ -14,9 +14,9 @@ spon_cnx = os.path.join(parcelwise_dir, 'data', 'sponpain', 'connectomes')
 bladder_ts_raw = os.path.join(parcelwise_dir, 'data', 'bladderpain', 'raw')
 bladder_ts_cleaned = os.path.join(parcelwise_dir, 'data', 'bladderpain', 'cleaned')
 bladder_cnx = os.path.join(parcelwise_dir, 'data', 'bladderpain', 'connectomes') 
-bladderpain_by_parcel = '/dartfs-hpc/scratch/f0040y1/low_back_pain/all_subs_parcelwise_raw_bladderpain_timeseries'
+bladderpain_by_parcel = '/dartfs-hpc/scratch/f0040y1/low_back_pain/all_subs_parcelwise_cleaned_bladderpain_timeseries'
 sponpain_by_parcel = '/dartfs-hpc/scratch/f0040y1/low_back_pain/all_subs_parcelwise_cleaned_sponpain_connectomes'
-common_space_dir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/data/bladder_raw_in_spon'
+common_space_dir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/data/bladder_cleaned_in_spon'
 
 
 def load_canlab_atlas():
@@ -33,7 +33,7 @@ def prep_parcelwise_data(subject, parcel, datatype):
         ds.fa['voxel_indices'] = range(ds.shape[1])
         zscore(ds, chunks_attr=None)
     elif datatype == 'bladderpain':
-        ds = Dataset(np.load(os.path.join(bladderpain_by_parcel, subject + '_bladderpain-raw-ts_parcel-' + str(parcel) + '.npy')))
+        ds = Dataset(np.load(os.path.join(bladderpain_by_parcel, subject + '_bladderpain-cleaned-ts_parcel-' + str(parcel) + '.npy')))
         ds.fa['voxel_indices'] = range(ds.shape[1])
         zscore(ds, chunks_attr=None)
     else:

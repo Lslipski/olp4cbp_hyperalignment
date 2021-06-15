@@ -1,4 +1,3 @@
-import mvpa2.suite as mv
 import sys
 from scipy.stats import zscore as sciz
 import scipy.io as sio
@@ -26,8 +25,8 @@ from datetime import date
 
 helperscripts = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/helper_scripts'
 helperfiles = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/helper_files'
-savedir = '/dartfs-hpc/scratch/f0040y1/low_back_pain/all_subs_parcelwise_cleaned_sponpain_connectomes'
-cnxs = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/data/sponpain/connectomes'
+savedir = '/dartfs-hpc/scratch/f0040y1/low_back_pain/all_subs_parcelwise_cleaned_bladderpain_timeseries'
+cnxs = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/data/bladderpain/cleaned'
 
 # load atlas label descriptions
 x = sio.loadmat(os.path.join(helperfiles,'label_descriptions.mat'))
@@ -42,7 +41,7 @@ for row in range(len(x['myindices'])):
     indices[row,:] = x['myindices'][row]
 
 # Get connectome file list
-mysubs = glob.glob(os.path.join(cnxs, '*sub*mat'))
+mysubs = glob.glob(os.path.join(cnxs, '*_ses-1_cleaned-filtered-bladderpain.mat'))
 print('Loading participant data from: {0}'.format(cnxs))
 print('Number of Subs going into HA: {0}'.format(str(len(mysubs))))
 
@@ -51,7 +50,7 @@ for sub in range(len(mysubs)):
     f = mysubs[sub]
     thissub = os.path.basename(f)
     print(thissub)
-    mat = sio.loadmat(f)['mat']
+    mat = sio.loadmat(f)['rbrain']
     
     for parcel in range(len(indices)):
         PARCEL_NUMBER =  parcel #int(sys.argv[2]	)
@@ -62,7 +61,7 @@ for sub in range(len(mysubs)):
 
         myvoxels = np.nonzero(indices[PARCEL_NUMBER])
         ds = mat[:,myvoxels[0]]
-        savestr = os.path.join(savedir, thissub[0:13] + '_sponpain_connectome_parcel-' + str(PARCEL_NUMBER) + '.npy')
+        savestr = os.path.join(savedir, thissub[0:13] + '_bladderpain-cleaned-ts_parcel-' + str(PARCEL_NUMBER) + '.npy')
 	np.save(savestr, ds)
 
 

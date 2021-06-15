@@ -9,8 +9,9 @@ from mvpa2.algorithms.hyperalignment import Hyperalignment
 from mvpa2.datasets import Dataset
 from mvpa2.base import debug
 from datetime import timedelta
+from mvpa2.base.hdf5 import h5save, h5load
 
-NPROC = 24
+NPROC = 6
 os.environ['TMPDIR']='/dartfs-hpc/scratch/f0040y1'
 os.environ['TEMP']='/dartfs-hpc/scratch/f0040y1'
 os.environ['TMP']='/dartfs-hpc/scratch/f0040y1'
@@ -36,9 +37,10 @@ def get_subject_list(nsubs=None):
 # save and apply mappers
 def apply_mappers((data_fn, mapper_fn, subject, mapper, parcel_num)):
     data = utils.prep_parcelwise_data(subject, parcel_num, 'bladderpain')
-    aligned = zscore((np.asmatrix(data)*mapper._proj).A, chunks_attr=None)
-    np.save(data_fn, aligned)
-    np.savez(mapper_fn, mapper)
+    #aligned = zscore((np.asmatrix(data)*mapper._proj).A, chunks_attr=None)
+    aligned = (np.asmatrix(data)*mapper._proj).A
+    h5save(data_fn, aligned)
+    h5save(mapper_fn, mapper)
 
 
 if __name__ == '__main__':
@@ -72,8 +74,8 @@ if __name__ == '__main__':
     del train_dss
 
     pool = mp.Pool(NPROC)
-    data_fns = [os.path.join(aligned_dirname,'{s}_aligned_dtseries.npy'.format(s=s)) for s in sub_list]
-    mapper_fns = [os.path.join(mapper_dirname,'{s}_trained_mapper.npz'.format(s=s)) for s in sub_list]
+    data_fns = [os.path.join(aligned_dirname,'{s}_aligned_cleaned_bladder_ts.hdf5'.format(s=s)) for s in sub_list]
+    mapper_fns = [os.path.join(mapper_dirname,'{s}_trained_mapper.hdf5.gz'.format(s=s)) for s in sub_list]
     iterable = zip(data_fns, mapper_fns, sub_list, mappers, np.repeat(parcel_num, len(mappers)))
     pool.map(apply_mappers, iterable)
     t2=time.time()

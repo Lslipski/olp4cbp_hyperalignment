@@ -11,4 +11,4 @@ module load python/anaconda2
 source /optnfs/common/miniconda3/etc/profile.d/conda.sh
 conda activate comp_meth_env
 
-python /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/helper_scripts/all_subs_parcelwise_sponpain_cnxs.py 
+python /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/scripts/parcelwise_ha/helper_scripts/all_subs_parcelwise_sponpain_cnxs.py 
