@@ -16,7 +16,7 @@ disp('Loaded subject_metadata.mat');
 % select for Time 1 subjects only
 mytabl = tabl(tabl.time==1, :); % maybe also only use patients? is_patient==1. I can't remember what we decided
 
-for i = 30:height(mytabl) % for each subj
+for i = 1:height(mytabl) % for each subj
     i
     sprintf('sub-%04d', mytabl.id(i))
     
