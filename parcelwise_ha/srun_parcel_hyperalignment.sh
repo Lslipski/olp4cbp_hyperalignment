@@ -20,7 +20,7 @@
 #SBATCH -e /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/log/%x_%A_%a.e
 #SBATCH --account=DBIC
 # Array 
-#SBATCH --array=[393,487]
+#SBATCH --array=1-487%10
 
 
 source /optnfs/common/miniconda3/etc/profile.d/conda.sh

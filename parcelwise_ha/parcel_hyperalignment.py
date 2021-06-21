@@ -74,8 +74,8 @@ if __name__ == '__main__':
     del train_dss
 
     pool = mp.Pool(NPROC)
-    data_fns = [os.path.join(aligned_dirname,'{s}_aligned_cleaned_bladder_ts.hdf5'.format(s=s)) for s in sub_list]
-    mapper_fns = [os.path.join(mapper_dirname,'{s}_trained_mapper.hdf5.gz'.format(s=s)) for s in sub_list]
+    data_fns = [os.path.join(aligned_dirname,'{s}_aligned_cleaned_bladder_ts_noZ.hdf5'.format(s=s)) for s in sub_list]
+    mapper_fns = [os.path.join(mapper_dirname,'{s}_trained_mapper.hdf5noZ.gz'.format(s=s)) for s in sub_list]
     iterable = zip(data_fns, mapper_fns, sub_list, mappers, np.repeat(parcel_num, len(mappers)))
     pool.map(apply_mappers, iterable)
     t2=time.time()
