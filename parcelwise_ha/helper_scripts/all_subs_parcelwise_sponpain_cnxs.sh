@@ -1,11 +1,23 @@
-#!/bin/bash -l
-#PBS -m bea
-#PBS -M torwa.gr@dartmouth.edu
-#PBS -N summarize_bladder_in_sponpain_iscs
-#PBS -l nodes=1:ppn=12
-#PBS -l walltime=48:00:00
-#PBS -o /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/log/save_connectomes_parcelwise_${PBS_JOBID}.o
-#PBS -e /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/log/save_connectomes_parcelwise_${PBS_JOBID}.e
+#!/bin/bash
+# Name
+#SBATCH --job-name=all_subs_parcelwise_bladder_cnxs
+# compute nodes
+#SBATCH --nodes=1
+# tasks per node
+#SBATCH --ntasks-per-node=1
+# CPUs per task
+#SBATCH --cpus-per-task=16
+# Walltime (job duration)
+#SBATCH --time=48:00:00
+# Name of partition
+#SBATCH --partition=standard
+# Email notifications (comma-separated options: BEGIN,END,FAIL)
+#SBATCH --mail-type=BEGIN,END,FAIL
+# Output and Error files
+#SBATCH -o /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/log/%x_%A.o
+#SBATCH -e /dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/log/%x_%A.e
+# Set Account
+#SBATCH --account=DBIC
 
 module load python/anaconda2
 source /optnfs/common/miniconda3/etc/profile.d/conda.sh
