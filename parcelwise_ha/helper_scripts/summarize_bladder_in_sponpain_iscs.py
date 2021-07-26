@@ -25,10 +25,10 @@ from datetime import date
 
 helperscripts = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/helper_scripts'
 helperfiles = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/helper_files'
-chamats = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/data/sponpain/cha_matrices'
+chamats = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/data/sponpain/connectomes'
 logdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/log/'
-savedir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/transformation_matrices'
-bladdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/data/bladderpain/raw'
+savedir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/results/hyperalignment_benchmarking'
+bladdir = '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/data/bladderpain/connectomes'
 
 def compute_average_similarity(dss, metric='correlation'):
     """
@@ -59,7 +59,8 @@ for row in range(len(x['myindices'])):
     indices[row,:] = x['myindices'][row]
     
 #parameters
-nsubs = int(sys.argv[1])
+#nsubs = int(sys.argv[1])
+nsubs = 202
 df_results = pd.DataFrame(np.nan, index=range(len(indices)), columns=['Parcel_desc','Parcel_label', 'Voxels_in_parcel',
                                                                      'Train_AA_ISC', 'Train_HA_ISC', 'Test_AA_ISC', 
                                                                      'Test_HA_ISC'])
@@ -85,7 +86,7 @@ print('Loaded TRAINING .mat files.')
 # LOAD TESTING DATA (BLADDER)
 sponfiles  = glob.glob(os.path.join(chamats, '*sub*mat'))
 sponsubs = [os.path.basename(x)[0:13] for x in sponfiles]
-testnfiles = [os.path.join(bladdir, sub + '_bladderpain_space-100105_raw_timeseries.mat') for sub in sponsubs]
+testnfiles = [os.path.join(bladdir, sub + '_bladderpain_raw_connectome.mat') for sub in sponsubs]
 print('Loading participant data from: {0}'.format(bladdir))
 testmysubs = testnfiles[0:nsubs]
 print('Number of Subs in Testing Data: {0}'.format(str(len(testmysubs))))
@@ -94,7 +95,10 @@ print('Number of Subs in Testing Data: {0}'.format(str(len(testmysubs))))
 testmats = []
 for sub in range(len(mysubs)):
     f = os.path.join(testmysubs[sub])
-    mat = np.transpose(sio.loadmat(f)['bladder_pain_ts'])
+    if f == '/dartfs-hpc/rc/home/1/f0040y1/CANlab/labdata/projects/OLP4CBP/hyperalignment/parcelwise/data/bladderpain/cleaned/sub-M80340398_ses-1_cleaned-filtered-bladderpain.mat':
+        continue # this P has no bladder pain
+    #mat = np.transpose(sio.loadmat(f)['rbrain'])
+    mat = sio.loadmat(f)['mat']
     testmats.append(mat)
 print('Loaded TESTING .mat files.')
 
@@ -168,4 +172,4 @@ for parcel in range(len(indices)):
 
 df_results['Train_HA_m_AA'] = df_results['Train_HA_ISC'] - df_results['Train_AA_ISC']
 df_results['Test_HA_m_AA'] = df_results['Test_HA_ISC'] - df_results['Test_AA_ISC']
-df_results.to_csv(os.path.join(savedir, 'bladder_in_sponpain_parcelwise_iscs_subs-' + str(nsubs) + '.csv'))
+df_results.to_csv(os.path.join(savedir, 'bladder_cnx_in_sponpain_parcelwise_iscs_subs-' + str(nsubs) + '.csv'))
