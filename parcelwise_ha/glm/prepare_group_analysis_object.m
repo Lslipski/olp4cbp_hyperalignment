@@ -27,6 +27,11 @@ dat.covariate_names = {'Pain Exp Decay VIFs'};
 % load fl_flm files one at a time
 for i = 1:height(univariate_subject_table)
     i
+    % exclude these subs. they have no sponpain data
+    to_exclude = ["M80321700", "M80395521"];
+    if sum(contains(to_exclude, table2array(univariate_subject_table(i, 2)))) > 1
+        continue
+    end
     % load this sub's glm file
     thisfile = fullfile(fldir, table2array(univariate_subject_table(i, 2)), 'bladder_pain_aCompCor_antpost', strcat('sub-',table2array(univariate_subject_table(i, 2)), '_FL_regressor_individual_model_CHA.mat'));
     thisglm = load(thisfile);
